@@ -5,11 +5,16 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import com.eventostec.api.domain.event.EventResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -50,6 +55,12 @@ public class EventService {
         eventRepositories.save(newEvent);
 
         return newEvent;
+    }
+
+    public List<EventResponseDTO> getUpComingEvents(int page, int pageSize){
+            Pageable pageable = PageRequest.of(page, pageSize);
+        Page<Event> eventsPage = this.eventRepositories.findUpComingEvents(new Date(),pageable);
+        return eventsPage.map(event -> new EventResponseDTO(event.getId(),event.getTitle(),event.getDescription(),event.getDate(),"","",event.getRemote(),event.getEventUrl(),event.getImgUrl())).stream().toList();
     }
 
     private String uploadImg(MultipartFile multipartFile){
