@@ -19,7 +19,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Coupon {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private UUID id;
     private String code;
     private Integer discount;
